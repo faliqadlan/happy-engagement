@@ -125,11 +125,41 @@
             transform: scale(1.05);
         }
 
+        /* YouTube Video Section */
+        .video-message {
+            padding: 4rem 0;
+            text-align: center;
+            background-color: #fff;
+        }
+
+        .video-message h2 {
+            margin-bottom: 2rem;
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin: 0 auto;
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
 
         /* Wishes Section */
         .wishes {
             padding: 4rem 0;
-            background-color: #fff;
+            background-color: #fdf6f4;
         }
 
         .wishes h2 {
@@ -181,46 +211,10 @@
         }
         
         .wish {
-            background: #fdf6f4;
+            background: #fff;
             padding: 1rem;
             border-radius: 5px;
             margin-bottom: 1rem;
-        }
-
-        /* Music Player Styling */
-        #youtube-player-container {
-            position: absolute;
-            top: -9999px;
-            left: -9999px;
-            width: 0;
-            height: 0;
-            overflow: hidden;
-        }
-        
-        #music-toggle-btn {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            background-color: #7c6a0a;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-            transition: background-color 0.3s ease;
-        }
-        #music-toggle-btn:hover {
-            background-color: #9a842a;
-        }
-        #music-toggle-btn svg {
-            width: 24px;
-            height: 24px;
         }
 
         /* Footer */
@@ -241,10 +235,6 @@
             }
             .container {
                 padding: 1.5rem;
-            }
-            #music-toggle-btn {
-                bottom: 20px;
-                right: 20px;
             }
         }
     </style>
@@ -282,6 +272,15 @@
             </div>
         </section>
 
+        <section class="video-message">
+            <div class="container">
+                <h2>A Song For You</h2>
+                <div class="video-wrapper">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/ApXm2ZsEywM?si=rqgEKyucFz5Icvqx" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+        </section>
+
         <section class="wishes">
             <div class="container">
                 <h2>Send Your Wishes</h2>
@@ -302,76 +301,12 @@
         <p>Made with ❤️ for Faliq & Elissa</p>
     </footer>
 
-    <!-- YouTube player container (hidden) -->
-    <div id="youtube-player-container">
-        <div id="youtube-player"></div>
-    </div>
-    <button id="music-toggle-btn" aria-label="Toggle Music"></button>
-
-    <!-- YouTube Iframe API Script -->
-    <script src="https://www.youtube.com/iframe_api"></script>
-
     <script>
-        // --- YouTube Player Setup ---
-        let player;
-        const videoId = 'ApXm2ZsEywM'; // Extracted from your URL
-
-        // This function is called by the YouTube API script once it's loaded
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('youtube-player', {
-                height: '0',
-                width: '0',
-                videoId: videoId,
-                playerVars: {
-                    'autoplay': 0,       // Autoplay is generally blocked by browsers
-                    'controls': 0,       // Hide player controls
-                    'loop': 1,           // Loop the video
-                    'playlist': videoId  // The video ID must be in a playlist to loop
-                },
-                events: {
-                    'onReady': onPlayerReady,
-                    'onStateChange': onPlayerStateChange
-                }
-            });
-        }
-
-        function onPlayerReady(event) {
-            // The player is ready. You could optionally play it here,
-            // but user interaction is required by most browsers.
-            // event.target.playVideo();
-        }
-
-        const toggleBtn = document.getElementById('music-toggle-btn');
-        const playIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>`;
-        const pauseIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg>`;
-        toggleBtn.innerHTML = playIcon;
-
-        function onPlayerStateChange(event) {
-            if (event.data === YT.PlayerState.PLAYING) {
-                toggleBtn.innerHTML = pauseIcon;
-            } else {
-                toggleBtn.innerHTML = playIcon;
-            }
-        }
-
-        // --- Main DOMContentLoaded Logic ---
         document.addEventListener('DOMContentLoaded', () => {
             const wishesForm = document.getElementById('wishes-form');
             const wishesDisplay = document.getElementById('wishes-display');
             const wisherNameInput = document.getElementById('wisher-name');
             const wishMessageInput = document.getElementById('wish-message');
-
-            // Music Toggle Button Event Listener
-            toggleBtn.addEventListener('click', () => {
-                if (player && typeof player.getPlayerState === 'function') {
-                    const playerState = player.getPlayerState();
-                    if (playerState === YT.PlayerState.PLAYING) {
-                        player.pauseVideo();
-                    } else {
-                        player.playVideo();
-                    }
-                }
-            });
             
             // --- Wishes Form Logic ---
             const displayWish = (name, message) => {
